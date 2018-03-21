@@ -1,3 +1,7 @@
+# Input folder for sentence extractor
+input/
+
+
 # PyCharm
 .idea/
 
