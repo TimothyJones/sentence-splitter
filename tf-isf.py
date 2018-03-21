@@ -54,6 +54,6 @@ for inputTextFile in listOfFiles:
                 if string in tfidfCache or string in stopWords:
                     continue
                 tfidfCache[string] = tfidf(word, sentence, sentences)
-            sorted_x = sorted(tfidfCache.items(), key=operator.itemgetter(1))
+            sorted_x = sorted(tfidfCache.items(), key=operator.itemgetter(1),reverse=True)
             print sentence
             print(sorted_x)
