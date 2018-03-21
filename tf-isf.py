@@ -31,8 +31,6 @@ def unicode_csv_reader(utf8_data, dialect=csv.excel, **kwargs):
         yield [unicode(cell, 'utf-8') for cell in row]
 
 
-
-
 inputPath = os.path.join(os.getcwd(), "1-sentences")
 outputPath = os.path.join(os.getcwd(), "2-tf-isf")
 listOfFiles = [os.path.join(inputPath, inputTextFile) for inputTextFile in os.listdir(inputPath) if os.path.isfile(os.path.join(inputPath, inputTextFile))]
