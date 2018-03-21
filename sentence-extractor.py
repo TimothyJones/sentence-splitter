@@ -6,7 +6,7 @@ from textblob import TextBlob
 
 
 inputPath = os.path.join(os.getcwd(), "input")
-outputPath = os.path.join(os.getcwd(), "output")
+outputPath = os.path.join(os.getcwd(), "1-sentences")
 listOfFiles = [os.path.join(inputPath, inputTextFile) for inputTextFile in os.listdir(inputPath) if os.path.isfile(os.path.join(inputPath, inputTextFile))]
 
 if not os.path.isdir(outputPath):
