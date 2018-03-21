@@ -1,10 +1,13 @@
 import os.path
 import math
+import hashlib
 import unicodecsv as csv
+from textblob import Sentence
+from decimal import Decimal
 
 
 def tf(word, blob):
-    return blob.words.count(word) / len(blob.words)
+    return Decimal(blob.words.count(word)) / Decimal(len(blob.words))
 
 
 def n_containing(word, bloblist):
@@ -12,7 +15,10 @@ def n_containing(word, bloblist):
 
 
 def idf(word, bloblist):
-    return math.log(len(bloblist) / (1 + n_containing(word, bloblist)))
+    term = Decimal(len(bloblist)) / Decimal((1 + n_containing(word, bloblist)))
+    if term == 0:
+        return Decimal(0)
+    return Decimal(math.log(term))
 
 
 def tfidf(word, blob, bloblist):
@@ -23,6 +29,8 @@ def unicode_csv_reader(utf8_data, dialect=csv.excel, **kwargs):
     csv_reader = csv.reader(utf8_data, dialect=dialect, **kwargs)
     for row in csv_reader:
         yield [unicode(cell, 'utf-8') for cell in row]
+
+
 
 
 inputPath = os.path.join(os.getcwd(), "1-sentences")
@@ -36,6 +44,12 @@ for inputTextFile in listOfFiles:
     print(inputTextFile)
     with open(inputTextFile, 'r') as content_file:
         csvReader = csv.reader(content_file)
-        for row in csvReader:
-            for sentence in row:
-                print("Sentence:" + sentence)
+        sentences = [Sentence(sentenceText) for row in csvReader for sentenceText in row]
+        for sentence in sentences:
+            seen = {}
+            for word in sentence.words:
+                string = word.encode("utf-8")
+                if seen.has_key(string):
+                    continue
+                seen[string] = 1
+                print("%s : %s " % (word,  "{0:.6g}".format(tfidf(word, sentence, sentences))))
