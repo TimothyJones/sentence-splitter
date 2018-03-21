@@ -1,14 +1,29 @@
 import os.path
-import codecs
-import re
+import math
 import unicodecsv as csv
-from textblob import TextBlob
+
+
+def tf(word, blob):
+    return blob.words.count(word) / len(blob.words)
+
+
+def n_containing(word, bloblist):
+    return sum(1 for blob in bloblist if word in blob.words)
+
+
+def idf(word, bloblist):
+    return math.log(len(bloblist) / (1 + n_containing(word, bloblist)))
+
+
+def tfidf(word, blob, bloblist):
+    return tf(word, blob) * idf(word, bloblist)
 
 
 def unicode_csv_reader(utf8_data, dialect=csv.excel, **kwargs):
     csv_reader = csv.reader(utf8_data, dialect=dialect, **kwargs)
     for row in csv_reader:
         yield [unicode(cell, 'utf-8') for cell in row]
+
 
 inputPath = os.path.join(os.getcwd(), "1-sentences")
 outputPath = os.path.join(os.getcwd(), "2-tf-isf")
