@@ -1,5 +1,6 @@
-# Input folder for sentence extractor
+# Input/output folders for sentence extractor
 input/
+1-sentences/
 
 
 # PyCharm
