@@ -3,6 +3,8 @@ import math
 import operator
 import unicodecsv as csv
 from textblob import Sentence
+from nltk.corpus import stopwords
+
 from decimal import Decimal
 
 
@@ -35,6 +37,8 @@ inputPath = os.path.join(os.getcwd(), "1-sentences")
 outputPath = os.path.join(os.getcwd(), "2-tf-isf")
 listOfFiles = [os.path.join(inputPath, inputTextFile) for inputTextFile in os.listdir(inputPath) if os.path.isfile(os.path.join(inputPath, inputTextFile))]
 
+stopWords = set(stopwords.words('english'))
+
 if not os.path.isdir(outputPath):
     os.mkdir(outputPath)
 
@@ -47,7 +51,7 @@ for inputTextFile in listOfFiles:
             tfidfCache = {}
             for word in sentence.words:
                 string = word.encode("utf-8")
-                if string in tfidfCache:
+                if string in tfidfCache or string in stopWords:
                     continue
                 tfidfCache[string] = tfidf(word, sentence, sentences)
             sorted_x = sorted(tfidfCache.items(), key=operator.itemgetter(1))
