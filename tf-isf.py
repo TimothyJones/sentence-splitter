@@ -1,6 +1,6 @@
 import os.path
 import math
-import hashlib
+import operator
 import unicodecsv as csv
 from textblob import Sentence
 from decimal import Decimal
@@ -44,10 +44,12 @@ for inputTextFile in listOfFiles:
         csvReader = csv.reader(content_file)
         sentences = [Sentence(sentenceText) for row in csvReader for sentenceText in row]
         for sentence in sentences:
-            seen = {}
+            tfidfCache = {}
             for word in sentence.words:
                 string = word.encode("utf-8")
-                if seen.has_key(string):
+                if string in tfidfCache:
                     continue
-                seen[string] = 1
-                print("%s : %s " % (word,  "{0:.6g}".format(tfidf(word, sentence, sentences))))
+                tfidfCache[string] = tfidf(word, sentence, sentences)
+            sorted_x = sorted(tfidfCache.items(), key=operator.itemgetter(1))
+            print sentence
+            print(sorted_x)
