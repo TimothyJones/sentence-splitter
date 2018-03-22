@@ -100,6 +100,8 @@ for sentence_id in sentence_text_dict:
             tfidfMatrix[sentence_id, get_word_id(wordString)] = tfidfCache[wordString]
 
 
+sets = []
+
 sim = sklearn.metrics.pairwise.cosine_similarity(tfidfMatrix)
 for i in range(len(sim)):
     maxIdx = -1
@@ -110,13 +112,46 @@ for i in range(len(sim)):
             maxIdx = j
     if maxIdx == -1:
         print("No match for sentence {0}".format(i))
+        print()
+        print()
     else:
         print("Best match for sentence {0} is sentence {1}, with score {2}".format(i, maxIdx, maxScore))
         print_sentence(i)
         print_sentence(maxIdx)
-    print()
-    print()
+        print()
+        print()
+
+        added = False
+        for s in sets:
+            if i in s or maxIdx in s:
+                s.add(i)
+                s.add(maxIdx)
+                added = True
+                break
+        if not added:
+            sets.append({i, maxIdx})
+
+finalSets = set()
+
+for s in sets:
+    finalSet = s.copy()
+    for other in sets:
+        if not finalSet.isdisjoint(other):
+            finalSet = finalSet.union(other)
+
+    finalSets.add(frozenset(finalSet))
+
+
+for s in finalSets:
+    minId = -1
+    minSubjectivity = 2
+    for id in s:
+        if minSubjectivity > sentence_text_dict[id].sentiment.subjectivity:
+            minSubjectivity = sentence_text_dict[id].sentiment.subjectivity
+            minId = id
+    print("{0} sentences support: {1}".format(len(s),sentence_text_dict[minId]))
 
 print(sim[82,81])
 print(num_sentences, nextWordId)
-
+print(sets)
+print(finalSets)
