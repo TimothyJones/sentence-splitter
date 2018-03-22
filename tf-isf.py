@@ -145,6 +145,8 @@ for s in sets:
     finalSets.add(frozenset(finalSet))
 
 
+summaries = []
+
 for s in finalSets:
     minId = -1
     minSubjectivity = 2
@@ -154,11 +156,17 @@ for s in finalSets:
             minSubjectivity = sentence_text_dict[id].sentiment.subjectivity
             minId = id
         docs_that_support.add(sentence_to_docid[id])
-        
+
     if minId == -1:
         continue
 
-    print("{0} complaints (with {1} sentences) support: {2}".format(len(docs_that_support),len(s),sentence_text_dict[minId]))
+    summaries.append((len(docs_that_support), s,minId))
+
+sorted_summaries = sorted(summaries, key=lambda x: x[0], reverse=True)
+
+for t in sorted_summaries:
+    s = t[1]
+    print("{0} complaints (with {1} sentences) support sentence {2}: {3}".format(t[0],len(s),t[2],sentence_text_dict[t[2]]))
     for id in s:
         if id != minId:
             print("    {0}".format(sentence_text_dict[id]))
