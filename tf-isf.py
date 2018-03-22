@@ -72,7 +72,7 @@ all_sentences = []
 # Read the data and count words / sentences
 for inputTextFile in listOfFiles:
     print(inputTextFile)
-    with open(inputTextFile, 'r') as content_file:
+    with open(inputTextFile, 'r', encoding='utf-8') as content_file:
         csvReader = csv.reader(content_file)
         sentences = [Sentence(sentenceText) for row in csvReader for sentenceText in row]
         all_sentences += sentences
