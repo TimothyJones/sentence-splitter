@@ -63,11 +63,12 @@ def print_sentence(idx):
 
 
 num_sentences = 0
-
+num_documents = 0
 
 sentence_text_dict = {}
 
 all_sentences = []
+sentence_to_docid = {}
 
 # Read the data and count words / sentences
 for inputTextFile in listOfFiles:
@@ -78,10 +79,12 @@ for inputTextFile in listOfFiles:
         all_sentences += sentences
         for sentence in sentences:
             sentence_text_dict[num_sentences] = sentence
+            sentence_to_docid[num_sentences] = num_documents
             num_sentences += 1
             for word in sentence.words:
                 string = word.encode("utf-8")
                 get_word_id(string)
+        num_documents += 1
 
 
 print(all_sentences)
@@ -145,11 +148,23 @@ for s in sets:
 for s in finalSets:
     minId = -1
     minSubjectivity = 2
+    docs_that_support = set()
     for id in s:
-        if minSubjectivity > sentence_text_dict[id].sentiment.subjectivity:
+        if minSubjectivity > sentence_text_dict[id].sentiment.subjectivity and len(sentence_text_dict[id].words) > 4:
             minSubjectivity = sentence_text_dict[id].sentiment.subjectivity
             minId = id
-    print("{0} sentences support: {1}".format(len(s),sentence_text_dict[minId]))
+        docs_that_support.add(sentence_to_docid[id])
+        
+    if minId == -1:
+        continue
+
+    print("{0} complaints (with {1} sentences) support: {2}".format(len(docs_that_support),len(s),sentence_text_dict[minId]))
+    for id in s:
+        if id != minId:
+            print("    {0}".format(sentence_text_dict[id]))
+    print()
+    print()
+
 
 print(sim[82,81])
 print(num_sentences, nextWordId)
