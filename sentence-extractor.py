@@ -14,7 +14,7 @@ if not os.path.isdir(outputPath):
 
 for inputTextFile in listOfFiles:
     print(inputTextFile)
-    with codecs.open(inputTextFile, 'r', 'utf-8') as content_file:
+    with codecs.open(inputTextFile, 'r', 'utf-8', 'ignore') as content_file:
         text = TextBlob(content_file.read())
         sentences = [re.sub('\s+', ' ', str(s)) for s in text.sentences]
         with open(os.path.join(outputPath, os.path.basename(inputTextFile)), 'wb') as outputCsvFile:
