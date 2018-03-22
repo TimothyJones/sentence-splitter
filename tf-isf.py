@@ -89,7 +89,6 @@ print(all_sentences)
 tfidfMatrix = scipy.sparse.dok_matrix((num_sentences, nextWordId))
 for sentence_id in sentence_text_dict:
     sentence = sentence_text_dict[sentence_id]
-    print(sentence)
     tfidfCache = {}
     for word in sentence.words:
         string = word.encode("utf-8")
