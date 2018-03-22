@@ -58,7 +58,7 @@ def get_word_id(word_string):
 
 def print_sentence(idx):
     global sentence_text_dict
-    print "Sentence %d: %s " % (idx, sentence_text_dict[idx])
+    print "Sentence {0}: {1} ".format(idx, sentence_text_dict[idx])
     print sentence_text_dict[idx].sentiment
 
 
@@ -110,9 +110,9 @@ for i in range(len(sim)):
             maxScore = sim[i][j]
             maxIdx = j
     if maxIdx == -1:
-        print "No match for sentence %d" % i
+        print "No match for sentence {0}".format(i)
     else:
-        print "Best match for sentence %d is sentence %d, with score %f"  %(i, maxIdx, maxScore)
+        print "Best match for sentence {0} is sentence {1}, with score {2}".format(i, maxIdx, maxScore)
         print_sentence(i)
         print_sentence(maxIdx)
     print
