@@ -1,7 +1,7 @@
 import os.path
 import math
 import operator
-import unicodecsv as csv
+import csv
 from textblob import Sentence
 from nltk.corpus import stopwords
 import sklearn.metrics
@@ -58,8 +58,8 @@ def get_word_id(word_string):
 
 def print_sentence(idx):
     global sentence_text_dict
-    print "Sentence {0}: {1} ".format(idx, sentence_text_dict[idx])
-    print sentence_text_dict[idx].sentiment
+    print("Sentence {0}: {1} ".format(idx, sentence_text_dict[idx]))
+    print(sentence_text_dict[idx].sentiment)
 
 
 num_sentences = 0
@@ -84,12 +84,12 @@ for inputTextFile in listOfFiles:
                 get_word_id(string)
 
 
-print all_sentences
+print(all_sentences)
 # Generate tf.idf scores and fill in the sparse matrix
 tfidfMatrix = scipy.sparse.dok_matrix((num_sentences, nextWordId))
 for sentence_id in sentence_text_dict:
     sentence = sentence_text_dict[sentence_id]
-    print sentence
+    print(sentence)
     tfidfCache = {}
     for word in sentence.words:
         string = word.encode("utf-8")
@@ -110,14 +110,14 @@ for i in range(len(sim)):
             maxScore = sim[i][j]
             maxIdx = j
     if maxIdx == -1:
-        print "No match for sentence {0}".format(i)
+        print("No match for sentence {0}".format(i))
     else:
-        print "Best match for sentence {0} is sentence {1}, with score {2}".format(i, maxIdx, maxScore)
+        print("Best match for sentence {0} is sentence {1}, with score {2}".format(i, maxIdx, maxScore))
         print_sentence(i)
         print_sentence(maxIdx)
-    print
-    print
+    print()
+    print()
 
 print(sim[82,81])
-print num_sentences, nextWordId
+print(num_sentences, nextWordId)
 
