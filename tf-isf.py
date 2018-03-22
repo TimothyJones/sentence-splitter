@@ -64,32 +64,44 @@ def print_sentence(idx):
 
 num_sentences = 0
 
-sm = scipy.sparse.dok_matrix((83, 650))
 
 sentence_text_dict = {}
 
+all_sentences = []
+
+# Read the data and count words / sentences
 for inputTextFile in listOfFiles:
     print(inputTextFile)
     with open(inputTextFile, 'r') as content_file:
         csvReader = csv.reader(content_file)
         sentences = [Sentence(sentenceText) for row in csvReader for sentenceText in row]
+        all_sentences += sentences
         for sentence in sentences:
-            tfidfCache = {}
             sentence_text_dict[num_sentences] = sentence
+            num_sentences += 1
             for word in sentence.words:
                 string = word.encode("utf-8")
                 get_word_id(string)
-                if string in tfidfCache or string in stopWords:
-                    continue
-                tfidfCache[string] = tfidf(word, sentence, sentences)
-            sorted_x = sorted(tfidfCache.items(), key=operator.itemgetter(1), reverse=True)
-            print num_sentences , sentence
-            for wordString in tfidfCache:
-                sm[num_sentences, get_word_id(wordString)] = tfidfCache[wordString]
-            num_sentences += 1
 
-sim = sklearn.metrics.pairwise.cosine_similarity(sm)
 
+print all_sentences
+# Generate tf.idf scores and fill in the sparse matrix
+tfidfMatrix = scipy.sparse.dok_matrix((num_sentences, nextWordId))
+for sentence_id in sentence_text_dict:
+    sentence = sentence_text_dict[sentence_id]
+    print sentence
+    tfidfCache = {}
+    for word in sentence.words:
+        string = word.encode("utf-8")
+        if string in tfidfCache or string in stopWords:
+            continue
+        tfidfCache[string] = tfidf(word, sentence, all_sentences)
+        sorted_x = sorted(tfidfCache.items(), key=operator.itemgetter(1), reverse=True)
+        for wordString in tfidfCache:
+            tfidfMatrix[sentence_id, get_word_id(wordString)] = tfidfCache[wordString]
+
+
+sim = sklearn.metrics.pairwise.cosine_similarity(tfidfMatrix)
 for i in range(len(sim)):
     maxIdx = -1
     maxScore = 0
@@ -98,7 +110,7 @@ for i in range(len(sim)):
             maxScore = sim[i][j]
             maxIdx = j
     if maxIdx == -1:
-        print "No match for sentence %d" % maxIdx
+        print "No match for sentence %d" % i
     else:
         print "Best match for sentence %d is sentence %d, with score %f"  %(i, maxIdx, maxScore)
         print_sentence(i)
@@ -107,5 +119,5 @@ for i in range(len(sim)):
     print
 
 print(sim[82,81])
-print num_sentences
+print num_sentences, nextWordId
 
